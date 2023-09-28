@@ -10,7 +10,8 @@
 // Require following module
 // - Random Generator
 // - Big Integers
-use num_bigint::BigUint;
+use num_bigint::{BigUint, RandBigInt};
+use rand;
 
 //* Exponentiate
 // a^x mod b
@@ -23,10 +24,10 @@ pub fn exponentiate(n: &BigUint, exp: &BigUint, modulus: &BigUint) -> BigUint {
 // output = s = k - c * x mod q
 pub fn solve(k: &BigUint, c: &BigUint, x: &BigUint, q: &BigUint) -> BigUint {
     //* If k is less than c*x, it will occur downflow.
-    if *k >= c * x {
-        return (k - c * x).modpow(&BigUint::from(1u32), q);
+    return if *k >= c * x {
+        (k - c * x).modpow(&BigUint::from(1u32), q)
     } else {
-        return q - (c * x - k).modpow(&BigUint::from(1u32), q);
+        q - (c * x - k).modpow(&BigUint::from(1u32), q)
     }
 }
 
@@ -50,6 +51,12 @@ pub fn verify(
     cond1 && cond2
 }
 
+pub fn gen_rand(limit: &BigUint) -> BigUint {
+    let mut rng = rand::thread_rng(); //* Generate random number
+
+    rng.gen_biguint_below(limit)
+}
+
 #[cfg(test)]
 mod test {
     use super::*; //* import all
@@ -67,7 +74,7 @@ mod test {
         let x: BigUint = BigUint::from(6u32);
         let k: BigUint = BigUint::from(7u32);
 
-        //* Challange
+        //* Challenge
         let c: BigUint = BigUint::from(4u32);
 
         //* Prover
@@ -92,22 +99,26 @@ mod test {
         assert_eq!(s, BigUint::from(5u32));
 
         //* Verify
-        let res: bool = verify(&r1, &r2, &alpha, &beta, &y1, &y2, &c, &s, &p); //* This will be computed
-                                                                               //as true.
+        let res: bool = verify(&r1, &r2, &alpha, &beta, &y1, &y2, &c, &s, &p); //* This will be computed as true.
 
         //* Assertion
         assert!(res); //* Assert to be true
 
-        //* Evasdropped key
+        //* Eavesdropped key
         let evas_x: BigUint = BigUint::from(7u32);
         let evas_s: BigUint = solve(&k, &c, &evas_x, &q);
-        let evas_res: bool = verify(&r1, &r2, &alpha, &beta, &y1, &y2, &c, &evas_s, &p); //* This
-                                                                                         //will be
-                                                                                         //computed
-                                                                                         //as
-                                                                                         //false.
+        let evas_res: bool = verify(&r1, &r2, &alpha, &beta, &y1, &y2, &c, &evas_s, &p); //* This will be computed as false.
 
         //* Assertion
         assert!(!evas_res);
+    }
+
+    #[test]
+    fn test_rand(){
+        let rand1: BigUint = gen_rand(&BigUint::from(100u32));
+        let rand2: BigUint = gen_rand(&BigUint::from(100u32));
+
+        println!("{}", rand1);
+        println!("{}", rand2);
     }
 }
