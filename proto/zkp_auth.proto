@@ -1,0 +1,53 @@
+syntax = "proto3";
+package zkp_auth;
+
+//* Proto file: tells the server and the client how they are going to communicate through gRPC.
+
+//* Register; prover will register to the server with y1,y2.
+  //* y1 = alpha^x mod p
+  //* y2 = beta^x mod p
+message RegisterRequest{
+  string username = 1; //* 1 - this will be a first argument of the request.
+  bytes y1 = 2; //* BigUint -> bytes array (needed to be serialized before request)
+  bytes y2 = 3;
+}
+
+message RegisterResponse {
+  //* empty body
+}
+
+//* Challenge Request: Prover will ask for a challenge by sending r1, r2
+  //* y1 = alpha^k mod p
+  //* y2 = beta^k mod p
+//* Verifier will send the challenge 'c' back.
+message AuthenticationChallengeRequest{
+  string username = 1;
+  bytes r1 = 2;
+  bytes r2 = 3;
+}
+
+message AuthenticationChallengeResponse{
+  string auth_id = 1; //* The prover need to send this id with solution to prove the prover itself asked the challenge.
+  bytes c = 2;
+}
+
+//* Solution & Verify: Prover will send the solution s.
+  //* s = k - c*x mod q
+//* Verifier will send a 'session ID' to log in (stay in the session) if the solution is correct (verified).
+message AuthenticationAnswerRequest {
+  string auth_id = 1;
+  bytes s = 2;
+}
+
+message AuthenticationAnswerResponse {
+  string session_id = 1;
+}
+
+
+//* Definition of Server service
+//* Tonic will compile this also for a client side.
+service AuthService{
+  rpc Register(RegisterRequest) returns (RegisterResponse){}
+  rpc CreateAuthenticationChallange(AuthenticationChallengeRequest) returns (AuthenticationChallengeResponse){}
+  rpc VerifyAuthentication(AuthenticationAnswerRequest) returns (AuthenticationAnswerResponse){}
+}
