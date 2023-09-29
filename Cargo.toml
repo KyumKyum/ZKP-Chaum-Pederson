@@ -9,6 +9,19 @@ edition = "2021"
 rand = "0.8"
 num-bigint = {version = "0.4", features = ["rand"]}
 hex = "0.4.3"
+tonic = "0.10.2"
+prost = "0.12.1"
+tokio = {version = "1.32.0", features = ["macros","rt-multi-thread"]} # async rust runtime
 
 [build-dependencies] # Befoe compilation
 tonic-build = "0.10.2"
+
+
+# Executables
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
