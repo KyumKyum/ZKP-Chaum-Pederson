@@ -48,6 +48,6 @@ message AuthenticationAnswerResponse {
 //* Tonic will compile this also for a client side.
 service AuthService{
   rpc Register(RegisterRequest) returns (RegisterResponse){}
-  rpc CreateAuthenticationChallange(AuthenticationChallengeRequest) returns (AuthenticationChallengeResponse){}
+  rpc CreateAuthenticationChallenge(AuthenticationChallengeRequest) returns (AuthenticationChallengeResponse){}
   rpc VerifyAuthentication(AuthenticationAnswerRequest) returns (AuthenticationAnswerResponse){}
 }

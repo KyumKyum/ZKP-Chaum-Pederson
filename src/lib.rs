@@ -3,7 +3,7 @@
 // Protocol: Chaum-Pedersen Protocol
 
 // Require following functions
-// - exponentiate(): a^x mod P
+// - pow(): a^x mod P
 // - solve(): generate s
 // - verify(): verify s
 
@@ -91,7 +91,11 @@ pub mod zkp_cp {
             //* Public
             let alpha: BigUint = BigUint::from_bytes_be(&G);
             //* alpha^x is also will be a generator -> define as an beta
-            let beta: BigUint = alpha.modpow(&ZKP::gen_rand(&q), &p);
+            //* X as an constant
+            let exp: BigUint = BigUint::from_bytes_be(
+                &hex::decode("5d8de022157b32099dc1").unwrap()
+            );
+            let beta: BigUint = alpha.modpow(&exp , &p);
 
             (alpha, beta, p, q)
         }

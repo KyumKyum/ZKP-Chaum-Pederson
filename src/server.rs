@@ -1,5 +1,6 @@
 use num_bigint::BigUint;
 use std::{sync::Mutex, collections::HashMap};
+use zkp_chaum_pedersen::zkp_cp;
 use zkp_cp::ZKP;
 // tonic lib will be generated in build time; need to use 'pub mod' iOT use macro keywords
 use tonic::{transport::Server, Code, Request, Response, Status};
@@ -9,7 +10,6 @@ pub mod zkp_auth{ //* Make this module available.
 }
 
 use zkp_auth::auth_service_server::{AuthService, AuthServiceServer};
-use zkp_chaum_pedersen::zkp_cp;
 //* Factories
 use crate::zkp_auth::{AuthenticationAnswerRequest, AuthenticationAnswerResponse, AuthenticationChallengeRequest, AuthenticationChallengeResponse, RegisterRequest, RegisterResponse};
 
@@ -111,7 +111,7 @@ impl AuthService for AuthImpl {
             let zkp = ZKP{alpha,beta,p,q};
 
             //* Proceed verification.
-            let verification = ZKP::verify(&zkp, &user_info.r1, &user_info.r2, &user_info.y1, &user_info.y2, &user_info.c, &s);
+            let verification = zkp.verify(&user_info.r1, &user_info.r2, &user_info.y1, &user_info.y2, &user_info.c, &s);
 
             if verification{
                 let session_id = ZKP::gen_rand_str(12);

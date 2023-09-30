@@ -169,7 +169,7 @@ pub mod auth_service_client {
                 .insert(GrpcMethod::new("zkp_auth.AuthService", "Register"));
             self.inner.unary(req, path, codec).await
         }
-        pub async fn create_authentication_challange(
+        pub async fn create_authentication_challenge(
             &mut self,
             request: impl tonic::IntoRequest<super::AuthenticationChallengeRequest>,
         ) -> std::result::Result<
@@ -187,14 +187,14 @@ pub mod auth_service_client {
                 })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
-                "/zkp_auth.AuthService/CreateAuthenticationChallange",
+                "/zkp_auth.AuthService/CreateAuthenticationChallenge",
             );
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(
                     GrpcMethod::new(
                         "zkp_auth.AuthService",
-                        "CreateAuthenticationChallange",
+                        "CreateAuthenticationChallenge",
                     ),
                 );
             self.inner.unary(req, path, codec).await
@@ -382,13 +382,13 @@ pub mod auth_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/zkp_auth.AuthService/CreateAuthenticationChallange" => {
+                "/zkp_auth.AuthService/CreateAuthenticationChallenge" => {
                     #[allow(non_camel_case_types)]
-                    struct CreateAuthenticationChallangeSvc<T: AuthService>(pub Arc<T>);
+                    struct CreateAuthenticationChallengeSvc<T: AuthService>(pub Arc<T>);
                     impl<
                         T: AuthService,
                     > tonic::server::UnaryService<super::AuthenticationChallengeRequest>
-                    for CreateAuthenticationChallangeSvc<T> {
+                    for CreateAuthenticationChallengeSvc<T> {
                         type Response = super::AuthenticationChallengeResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
@@ -418,7 +418,7 @@ pub mod auth_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = CreateAuthenticationChallangeSvc(inner);
+                        let method = CreateAuthenticationChallengeSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
