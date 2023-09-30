@@ -16,14 +16,17 @@
 mod constant;
 
 //* module zkp chaum-pedersen
-mod zkp_cp {
+pub mod zkp_cp {
     use num_bigint::{BigUint, RandBigInt};
     use rand;
-    pub struct ZKP {
-        pub(crate) p: BigUint,
-        pub(crate) q: BigUint,
-        pub(crate) alpha: BigUint,
-        pub(crate) beta: BigUint,
+    use rand::Rng;
+    use crate::constant;
+
+    pub struct  ZKP {
+        pub p: BigUint,
+        pub q: BigUint,
+        pub alpha: BigUint,
+        pub beta: BigUint,
     }
 
     impl ZKP {
@@ -70,6 +73,27 @@ mod zkp_cp {
             let mut rng = rand::thread_rng(); //* Generate random number
 
             rng.gen_biguint_below(limit)
+        }
+
+        pub fn gen_rand_str(size: usize) -> String {
+            rand::thread_rng()
+                .sample_iter(rand::distributions::Alphanumeric)
+                .take(size)
+                .map(char::from)
+                .collect() //* Collect all char generated.
+        }
+
+        pub fn get_const() -> (BigUint, BigUint, BigUint, BigUint) {
+            let (P,G,Q) = constant::gen_large_prime();
+            let p: BigUint = BigUint::from_bytes_be(&P);
+            let q: BigUint = BigUint::from_bytes_be(&Q);
+
+            //* Public
+            let alpha: BigUint = BigUint::from_bytes_be(&G);
+            //* alpha^x is also will be a generator -> define as an beta
+            let beta: BigUint = alpha.modpow(&ZKP::gen_rand(&q), &p);
+
+            (alpha, beta, p, q)
         }
     }
 }

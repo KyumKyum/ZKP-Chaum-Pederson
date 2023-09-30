@@ -240,7 +240,7 @@ pub mod auth_service_server {
             tonic::Response<super::RegisterResponse>,
             tonic::Status,
         >;
-        async fn create_authentication_challange(
+        async fn create_authentication_challenge(
             &self,
             request: tonic::Request<super::AuthenticationChallengeRequest>,
         ) -> std::result::Result<
@@ -402,7 +402,7 @@ pub mod auth_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                <T as AuthService>::create_authentication_challange(
+                                <T as AuthService>::create_authentication_challenge(
                                         &inner,
                                         request,
                                     )
