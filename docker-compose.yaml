@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  zkp-serv:
+    build: .
+    volumes: #local volume mapped with docker container
+      - ./:/zkp-serv
+    environment:
+      - USER=Jay
+    container_name: zkpserver
